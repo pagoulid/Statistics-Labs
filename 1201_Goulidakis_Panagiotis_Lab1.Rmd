@@ -1,0 +1,192 @@
+
+---
+title: "Lab1"
+output:
+  html_document:
+    df_print: paged
+---
+
+              LAB 1
+              
+              
+              
+Exercise  1.1 INPUT: 60 85 72 59 37 75 93 7 98 63 41 90 5 17 97
+```{r}
+x=c(60,85,72,59,37,75,93,7,98,63,41,90,5,17,97)
+sx=stem(x)
+print(sx)
+```
+Exercise 1.2
+#########################################################
+ The decimal point is 1 digit(s) to the right of the |
+
+   8 | 028
+   9 | 115578
+  10 | 1669
+  11 | 01   
+##########################################################
+
+The data from the given stem and leaf plot are: 80,82,88,91,91,95,95,97,98,101,106,106,109,110,111
+```{r}
+data=c(80,82,88,91,91,95,95,97,98,101,106,106,109,110,111)
+stem(data)
+```
+```{r}
+hist(data,probability=TRUE)
+```
+Exercise 1.3
+1st Randomization
+```{r}
+f=rnorm(100)
+hist(f)
+```
+2nd Randomization
+```{r}
+f=rnorm(100)
+hist(f)
+```
+As we see the two histograms are not the same
+
+
+Exercise 1.4
+
+library("UsingR")
+```{r}
+library("UsingR")
+```
+For south dataset:
+```{r}
+data(south)
+hist(south)
+```
+```{r}
+boxplot(south,horizontal = TRUE)
+```
+
+For crime:
+```{r}
+data(crime)
+hist(crime)
+```
+```{r}
+boxplot(crime,horizontal = TRUE)
+```
+For aid dataset:
+```{r}
+data(aid)
+hist(aid)
+```
+```{r}
+boxplot(aid,horizontal=TRUE)
+```
+As we see from the diagrams above the south dataset has the most skewed data, in addition to the crime dataset which data are much less skewed.The only symmetry we can find is in aid dataset.
+
+Exercise 1.5
+
+a) Predict for bumpers:
+```{r}
+data(bumpers)
+hist(bumpers)
+```
+Predictions:
+  Median:2100
+  Mean:2000
+  Standard deviation:500
+  
+```{r}
+median(bumpers)
+mean(bumpers)
+sd(bumpers)
+```
+b) Predict for firstchi:
+```{r}
+data(firstchi)
+hist(firstchi)
+```
+Predictions:
+  Median:26
+  Mean:27.5
+  Standard deviation:5
+  
+```{r}
+median(firstchi)
+mean(firstchi)
+sd(firstchi)
+```
+c) Predict for math:
+```{r}
+data(math)
+hist(math)
+```
+
+Predictions:
+  Median:55
+  Mean:55
+  Standard deviation:10
+  
+```{r}
+median(math)
+mean(math)
+sd(math)
+```
+Exercise 1.6
+ Number of O-ring failures for the first 23 flights of the US space shuttle Challenger : 0,1,0,NA,0,0,0,0,0,1,1,1,0,0,3,0,0,0,0,0,2,0,1
+
+```{r}
+flights=c(0,1,0,NA,0,0,0,0,0,1,1,1,0,0,3,0,0,0,0,0,2,0,1)
+fl=table(flights)
+print(fl)
+mean(fl[!is.na(fl)])
+```
+Exercise 1.7
+
+```{r}
+hist(pi2000,probability = TRUE)
+```
+```{r}
+prop=table(pi2000)/length(pi2000)
+print(prop)
+print(prop[2])
+print(prop[3])
+print(prop[4])
+```
+We can estimate the proportions for all digits
+The proportion for 1's,2's and 3's are:
+1)0.1065
+2)0.1035
+3)0.0945
+
+Exercise 1.8
+Fit a density to pi2000
+
+```{r}
+data(pi2000)
+#attach(prop)
+hist(pi2000,probability=TRUE)
+lines(density(pi2000,bw=0.45))
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

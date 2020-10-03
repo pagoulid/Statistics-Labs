@@ -1,0 +1,246 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+---
+```{r}
+library(UsingR)
+```
+
+Lab 4: Exploratory Data Analysis
+
+Experimental Data Analysis (eda) is the process of looking at a data set to see what are the appropriate statistical inferences that can possibly be learned. For univariate data, we can ask if the data is approximately normal, longer tailed, or shorter tailed? Does it have symmetry, or is it skewed? Is it unimodal, bimodal or multi-modal? The main tool is the proper use of computer graphics.
+
+
+4.1  Our toolbox
+Our toolbox for eda consists of graphical representations of the data and our interpretation. Here is a summary of graphical methods covered so far:
+barplots
+for categorical data
+histogram, dot plots, stem and leaf plots
+to see the shape of numerical distributions
+boxplots
+to see summaries of a numerical distribution, useful in comparing distributions and identifying long and short-tailed distributions.
+normal probability plots
+To see if data is approximately normal
+It is useful to have many of these available with one easy function. The function simple.eda does exactly that. 
+
+Here are some examples of distributions with different shapes.
+
+
+4.2 Examples
+
+Example: Homedata
+The dataset homedata contains assessed values for Maplewood, NJ for the year 1970 and the year 2000. What is the shape of the distribution?
+
+```{r}
+ data(homedata)                # from simple package
+attach(homedata)              
+hist(y1970);hist(y2000)       # make two histograms
+detach(homedata)              # clean up
+```
+On first appearances (figure 35), the 1970 data looks more normal, the year 2000 data has a heavier tail. Let's see using our simple.eda function.
+
+```{r}
+attach(homedata)              
+simple.eda(y1970);simple.eda(y2000)     
+detach(homedata)              # clean up
+```
+Neither looks particularly normal -- both are heavy tailed and skewed. Any analysis will want to consider the medians or a transformation.
+
+
+Example: CEO salaries
+The data set exec.pay gives the total direct compensation for CEO's at 200 large publicly traded companies in the U.S for the year 2000 (in units of $100,000). What can we say about this distribution besides it looks like good work if you can get it? Using simple.eda yields
+
+```{r}
+data(exec.pay)                # or read in from file
+ simple.eda(exec.pay)
+```
+
+
+
+
+
+
+we see a heavily skewed distribution as we might expect. A transformation is called for, let's try the logarithmic transformation (base 10). Since some values are 0 (these CEO's are directly compensated less than $100,000 or perhaps were forced to return all profits in a plea arrangement to stay out of jail), we ask not to include these.
+
+```{r}
+log.exec.pay = log(exec.pay[exec.pay >0])/log(10) # 0 is a problem
+ simple.eda(log.exec.pay) 
+```
+This is now very symmetric and gives good insight into the actual distribution. (Almost log normal, which says that after taking a logarithm, it looks like a normal.) Any analysis will want to use resistant measures such as the median or a transform prior to analysis.
+
+
+Example: Taxi time at EWR
+The dataset ewr contains taxi in and taxi out times at Newark airport (EWR). Let's see what the trends are.
+
+```{r}
+data(ewr)
+ names(ewr)
+```
+[1] "Year"    "Month"   "AA"      "CO"      "DL"      "HP"      "NW"     
+ [8] "TW"      "UA"      "US"      "inorout"
+```{r}
+ airnames = names(ewr)         # store them for later
+ ewr.actual = ewr[,3:10]       # get the important columns
+ boxplot(ewr.actual)
+```
+
+All of them look skewed. Let's see if there is a difference between taxi in and out times.
+
+
+```{r}
+ par(mfrow=c(2,4))             # 2 rows 4 columns
+ attach(ewr)
+for(i in 3:10) boxplot(ewr[,i] ~ as.factor(inorout),main=airnames[i])    
+detach(ewr)
+ par(mfrow=c(1,1))             # return graphics as is (or close window)
+```
+
+(The third line is the only important one. Here we used the boxplot command with the model notation -- of the type boxplot(y ~ x) -- which when x is a factor, does separate boxplots for each level. The command as.factor ensures that the variable inorout is a factor. Also note, we used a for loop to show all 8 plots.
+
+Notice the taxi in times are more or less symmetric with little variation (except for HP -- America West -- with a 10 minute plus average). The taxi out times have a heavy tail. At EWR, when the airport is busy, the planes can really backup and the 30 minute wait is not unusual. The data for Northwest (NW) seems to be less. We can compare this using statistical tests. Since the distributions are skewed, we may wish to compare the medians. (In general, be careful when applying statistical tests to summarized data.)
+
+
+Example: Symmetric or skewed, Long or short?
+For unimodal data, there are 6 basic possibilities as it is symmetric or skewed, and the tails are short, regular or long. Here are some examples with random data from known distributions (figure 42).
+
+```{r}
+## symmetric: short, regular then long
+ X=runif(100);boxplot(X,horizontal=T)
+ X=rnorm(100);boxplot(X,horizontal=T)
+ X=rt(100,2);boxplot(X,horizontal=T)
+## skewed:  short, regular then long
+# triangle distribution
+ X=sample(1:6,100,p=7-(1:6),replace=T);boxplot(X,horizontal=T)
+ X=abs(rnorm(200));boxplot(X,horizontal=T)
+ X=rexp(200);boxplot(X,horizontal=T) 
+```
+
+
+
+
+
+
+4.3 Problems
+4.1
+Attach the data set babies (dataset is part of UsingR library which must install. The documentation of the library is included in Lab 4 file). Describe the distributions of the variables birth weight (bwt), gestation, age, height and weight.
+
+```{r}
+library(UsingR)
+data(babies)
+attach(babies)
+
+simple.eda(wt) #birth weight
+```
+
+It looks highly symmetric.That means we have a normal distribution.
+```{r}
+simple.eda(gestation)
+```
+the data are skewed and heavy-tailed
+```{r}
+simple.eda(age)
+```
+there we can see a left-tailed distribution
+```{r}
+simple.eda(ht)
+```
+```{r}
+simple.eda(wt1)
+```
+Here the data are very skewed and heavy-tailed
+
+
+4.2
+The Simple data set iq contains simulated scores on a hypothetical IQ test. What analysis is appropriate for measuring the center of the distribution? Why? (Note: the data reads in as a list.)
+```{r}
+data(iq)
+#l=length(iq)
+#nums=c(1:l)
+#res=data.frame("order"=c(nums),"results"=c(iq))
+#res
+#attach(res)
+#hist(res[,2])
+#boxplot(res[,2])
+#x=rnorm(100)
+#qqnorm(iq)
+#qqline(iq)
+#detach(res)
+simple.eda(iq)
+
+```
+one way is to store the the list into a dataframe so we can use the appropriate functions.On the other we can use   directly the eda function.On both ways we see some differences but we cam understand that the data is highly symmetrical but a little bit skewed on the edges(tailed).It is highly recommended for our analysis to use the histogram so we can better measure the center of the data because we can see better where exact is the symmetry.
+4.3
+The Simple data set slc contains data on red blood cell sodium-lithium countertransport activity for 190 individuals. Describe the shape of the distribution, estimate the center, state what is an appropriate measure of center for this data.
+
+```{r}
+data(slc)
+simple.eda(slc)
+stem(slc)
+```
+
+4.4
+The t distribution will be important later. It depends on a parameter called the degrees of freedom. Use the rt(n,df) function to investigate the t-distribution for n=100 and df=2, 10 and 25.
+```{r}
+n=100
+dat=rt(n,2)
+simple.eda(dat)
+```
+```{r}
+dat=rt(n,10)
+simple.eda(dat)
+```
+```{r}
+dat=rt(n,25)
+simple.eda(dat)
+```
+We see that with a less df our data are much more skewed,but as we increase our
+df we normalize our data at one point we have a high symmetry.for df=10,25 we have a high
+symmetry but for 25 we can see a left-tailed distribution.For 10 we summarize better our data for better symmetry and better normalization.So we prefer better df's that are not very small,neither very high. 
+
+
+4.5
+The 2 distribution also depends on a parameter called the degrees of freedom. Use the rchisq(n,df) function to investigate the 2 distribution with n=100 and df=2,10 and 25.
+```{r}
+n=100
+dat1=rchisq(n,2)
+simple.eda(dat1)
+```
+```{r}
+dat1=rchisq(n,10)
+simple.eda(dat1)
+```
+```{r}
+dat1=rchisq(n,25)
+simple.eda(dat1)
+```
+For df=2 our data are very skewed and heavy-tailed.As we increase our df we can see a better symmetry and in fact we prefer the symmetry of df=25.Also in df=25 we have a much more regular tail, and thi is good for the analysis 
+
+
+4.6
+The R dataset trees contains girth (diameter), height and volume (of boardfeet) measurements for several trees of a species of cherry tree. Describe the distributions of each of these 3 variables. Are any long tailed, short-tailed, skewed?
+
+```{r}
+data(trees)
+attach(trees)
+name=names(trees)
+name[1]
+c=0
+for(var in trees){
+  c=c+1
+ 
+  simple.eda(var)
+  title(name[c], line = -2)
+  
+}
+
+```
+For girth we have skewed data with a regular-tailed distribution(right-tailed).
+In height we see a good symmetry with also a regular tail.
+Finally in volume our data are much more skewed than in girth,witha short-tail
+distribution(right-tailed)
+
+
+
+
